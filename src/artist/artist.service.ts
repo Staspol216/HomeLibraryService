@@ -38,10 +38,21 @@ export class ArtistService {
 
   delete(id: string) {
     const artistIndex = this.db.artists.findIndex((artist) => artist.id === id);
+    const targetArtist = this.db.artists[artistIndex];
     if (artistIndex === -1) {
       throw new NotFoundException(`Artist with id ${id} not found`);
     }
     this.db.artists.splice(artistIndex, 1);
-    return `Track with id ${id} has been deleted`;
+    this.db.albums.forEach((album) => {
+      if (album.artistId === targetArtist.id) {
+        album.artistId = null;
+      }
+    });
+    this.db.tracks.forEach((track) => {
+      if (track.artistId === targetArtist.id) {
+        track.artistId = null;
+      }
+    });
+    return `Artist with id ${id} has been deleted`;
   }
 }

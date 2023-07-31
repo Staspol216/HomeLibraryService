@@ -41,7 +41,13 @@ export class AlbumService {
     if (albumIndex === -1) {
       throw new NotFoundException(`Artist with id ${id} not found`);
     }
+    const targetAlbum = this.db.albums[albumIndex];
     this.db.albums.splice(albumIndex, 1);
-    return `Track with id ${id} has been deleted`;
+    this.db.tracks.forEach((track) => {
+      if (track.albumId === targetAlbum.id) {
+        track.albumId = null;
+      }
+    });
+    return `Album with id ${id} has been deleted`;
   }
 }
