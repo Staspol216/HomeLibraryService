@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { DB } from 'src/DB/db.service';
+import { DB } from 'src/db/db.service';
 import { Album } from 'src/album/interfaces/album.interface';
 import { Artist } from 'src/artist/interfaces/artist.interface';
 import { Track } from 'src/track/interfaces/track.interface';
@@ -29,69 +29,25 @@ export class FavoriteService {
     return result;
   }
 
-  addTrackToFav(id: string) {
-    const hasEntityById = this.db.tracks.find((track) => track.id === id);
+  addToFavorite(id: string, entity: any) {
+    const hasEntityById = this.db[entity].find((item) => item.id === id);
     if (!hasEntityById) {
       throw new UnprocessableEntityException(
-        `Favorite track with ${id} not found`,
+        `Favorite ${entity} with ${id} not found`,
       );
     }
-    this.db.favorites.tracks.push(id);
-    return 'Track has been added to the favorites';
+    this.db.favorites[entity].push(id);
+    return `${entity} has been added to the favorites`;
   }
 
-  removeTrackFromFavorite(id: string) {
-    const favTrackIndex = this.db.favorites.tracks.findIndex(
-      (trackId) => trackId === id,
+  removeFromFavorite(id: string, entity: any) {
+    const favItemIndex = this.db.favorites[entity].findIndex(
+      (itemId: string) => itemId === id,
     );
-    if (favTrackIndex === -1) {
-      throw new NotFoundException(`Favorite track with ${id} not found`);
+    if (favItemIndex === -1) {
+      throw new NotFoundException(`Favorite ${entity} with ${id} not found`);
     }
-    this.db.favorites.tracks.splice(favTrackIndex, 1);
-    return `Favorite track with ${id} has been deleted`;
-  }
-
-  addAlbumsToFav(id: string) {
-    const hasEntityById = this.db.albums.find((album) => album.id === id);
-    if (!hasEntityById) {
-      throw new UnprocessableEntityException(
-        `Favorite album with ${id} not found`,
-      );
-    }
-    this.db.favorites.albums.push(id);
-    return 'Album has been added to the favorites';
-  }
-
-  removeAlbumFromFavorite(id: string) {
-    const favAlbumIndex = this.db.favorites.albums.findIndex(
-      (albumId) => albumId === id,
-    );
-    if (favAlbumIndex === -1) {
-      throw new NotFoundException(`Favorite album with ${id} not found`);
-    }
-    this.db.favorites.albums.splice(favAlbumIndex, 1);
-    return `Favorite album with ${id} has been deleted`;
-  }
-
-  addArtistToFavorite(id: string) {
-    const hasEntityById = this.db.artists.find((artist) => artist.id === id);
-    if (!hasEntityById) {
-      throw new UnprocessableEntityException(
-        `Favorite artist with ${id} not found`,
-      );
-    }
-    this.db.favorites.artists.push(id);
-    return 'Artist has been added to the favorites';
-  }
-
-  removeArtistFromFavorite(id: string) {
-    const favArtistIndex = this.db.favorites.artists.findIndex(
-      (artistId) => artistId === id,
-    );
-    if (favArtistIndex === -1) {
-      throw new NotFoundException(`Favorite artist with ${id} not found`);
-    }
-    this.db.favorites.artists.splice(favArtistIndex, 1);
-    return `Favorite artist with ${id} has been deleted`;
+    this.db.favorites[entity].splice(favItemIndex, 1);
+    return `Favorite ${entity} with ${id} has been deleted`;
   }
 }

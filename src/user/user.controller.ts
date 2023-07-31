@@ -12,6 +12,7 @@ import {
 import { UserService } from './user.service';
 import { User, UserWithoutPassword } from './interfaces/user.interface';
 import { CreateUserDto, UpdateUserPasswordDto } from './dto';
+import { StatusCodes } from 'http-status-codes';
 
 @Controller('user')
 export class UserController {
@@ -43,7 +44,7 @@ export class UserController {
   }
 
   @Delete(':uuid')
-  @HttpCode(204)
+  @HttpCode(StatusCodes.NO_CONTENT)
   async delete(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<string> {
     return this.userService.delete(uuid);
   }

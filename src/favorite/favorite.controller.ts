@@ -9,48 +9,59 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { FavoritesResponse } from './interfaces/favorite.interface';
+import { StatusCodes } from 'http-status-codes';
+import { FavoriteEntities } from 'src/db/db.service';
 @Controller('favs')
 export class FavoriteController {
   constructor(private favoriteService: FavoriteService) {}
 
   @Get()
-  findAll(): FavoritesResponse {
+  async findAll(): Promise<FavoritesResponse> {
     return this.favoriteService.findAll();
   }
 
   @Post('track/:uuid')
-  @HttpCode(201)
-  addTrackToFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.addTrackToFav(uuid);
+  @HttpCode(StatusCodes.CREATED)
+  async addTrackToFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.favoriteService.addToFavorite(uuid, FavoriteEntities.Tracks);
   }
 
   @Delete('track/:uuid')
-  @HttpCode(204)
-  removeTrackFromFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.removeTrackFromFavorite(uuid);
+  @HttpCode(StatusCodes.NO_CONTENT)
+  async removeTrackFromFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.favoriteService.removeFromFavorite(
+      uuid,
+      FavoriteEntities.Tracks,
+    );
   }
 
   @Post('artist/:uuid')
-  @HttpCode(201)
-  addArtistToFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.addArtistToFavorite(uuid);
+  @HttpCode(StatusCodes.CREATED)
+  async addArtistToFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.favoriteService.addToFavorite(uuid, FavoriteEntities.Artist);
   }
 
   @Delete('artist/:uuid')
-  @HttpCode(204)
-  removeArtistFromFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.removeArtistFromFavorite(uuid);
+  @HttpCode(StatusCodes.NO_CONTENT)
+  async removeArtistFromFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.favoriteService.removeFromFavorite(
+      uuid,
+      FavoriteEntities.Artist,
+    );
   }
 
   @Post('album/:uuid')
-  @HttpCode(201)
-  addAlbumToFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.addAlbumsToFav(uuid);
+  @HttpCode(StatusCodes.CREATED)
+  async addAlbumToFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.favoriteService.addToFavorite(uuid, FavoriteEntities.Albums);
   }
 
   @Delete('album/:uuid')
-  @HttpCode(204)
-  removeAlbumFromFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.removeAlbumFromFavorite(uuid);
+  @HttpCode(StatusCodes.NO_CONTENT)
+  async removeAlbumFromFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.favoriteService.removeFromFavorite(
+      uuid,
+      FavoriteEntities.Albums,
+    );
   }
 }

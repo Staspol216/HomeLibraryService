@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import { CreateTrackDto, UpdateTrackDto } from './dto/track.dto';
 import { Track } from './interfaces/track.interface';
 import { TrackService } from './track.service';
@@ -27,7 +28,7 @@ export class TrackController {
   }
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(StatusCodes.CREATED)
   async create(@Body() dto: CreateTrackDto) {
     return this.trackService.create(dto);
   }
@@ -41,7 +42,7 @@ export class TrackController {
   }
 
   @Delete(':uuid')
-  @HttpCode(204)
+  @HttpCode(StatusCodes.NO_CONTENT)
   async delete(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<string> {
     return this.trackService.delete(uuid);
   }

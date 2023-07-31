@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { User, UserWithoutPassword } from './interfaces/user.interface';
 import { CreateUserDto, UpdateUserPasswordDto, UserDto } from './dto';
-import { DB } from 'src/DB/db.service';
+import { DB } from 'src/db/db.service';
 
 @Injectable({})
 export class UserService {

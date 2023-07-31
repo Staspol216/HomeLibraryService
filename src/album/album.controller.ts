@@ -12,6 +12,7 @@ import {
   Controller,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { StatusCodes } from 'http-status-codes';
 @Controller('album')
 export class AlbumController {
   constructor(private artistService: AlbumService) {}
@@ -27,7 +28,7 @@ export class AlbumController {
   }
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(StatusCodes.CREATED)
   async create(@Body() dto: CreateAlbumDto) {
     return this.artistService.create(dto);
   }
@@ -41,7 +42,7 @@ export class AlbumController {
   }
 
   @Delete(':uuid')
-  @HttpCode(204)
+  @HttpCode(StatusCodes.NO_CONTENT)
   async delete(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<string> {
     return this.artistService.delete(uuid);
   }
