@@ -16,7 +16,6 @@ export class FavoriteService {
   findAll() {
     const result = {} as FavoritesResponse;
     for (const entity in this.db.favorites) {
-      console.log(this.db.favorites[entity], 'entity', entity);
       result[entity] = this.db.favorites[entity]
         .map((id: string) => {
           const itemById = this.db[entity].find(
