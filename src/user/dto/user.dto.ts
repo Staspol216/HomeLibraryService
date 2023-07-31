@@ -1,10 +1,14 @@
+import { Exclude } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
 
 export class UserDto {
   id: string;
   login: string;
+
+  @Exclude()
   password: string;
+
   version: number;
   createdAt: number;
   updatedAt: number;

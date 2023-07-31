@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DB } from 'src/db/db.service';
+import { DB, FavoriteEntities } from 'src/db/db.service';
 import { Track } from './interfaces/track.interface';
 import { CreateTrackDto, TrackDto } from './dto';
+import { FavoriteService } from 'src/favorite/favorite.service';
 
 @Injectable()
 export class TrackService {
-  constructor(private db: DB) {}
+  constructor(private db: DB, private favoriteService: FavoriteService) {}
   findAll() {
     return this.db.tracks;
   }
@@ -42,6 +43,9 @@ export class TrackService {
     if (trackIndex === -1) {
       throw new NotFoundException(`Track with id ${id} not found`);
     }
+
+    this.favoriteService.removeIdByDeleting(id, FavoriteEntities.Tracks);
+
     this.db.tracks.splice(trackIndex, 1);
     return `Track with id ${id} has been deleted`;
   }

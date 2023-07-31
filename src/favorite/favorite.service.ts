@@ -49,4 +49,12 @@ export class FavoriteService {
     this.db.favorites[entity].splice(favItemIndex, 1);
     return `Favorite ${entity} with ${id} has been deleted`;
   }
+
+  removeIdByDeleting(id: string, entity: any) {
+    const favItemIndex = this.db.favorites[entity].findIndex(
+      (itemId: string) => itemId === id,
+    );
+    if (favItemIndex === -1) return;
+    this.db.favorites[entity].splice(favItemIndex, 1);
+  }
 }

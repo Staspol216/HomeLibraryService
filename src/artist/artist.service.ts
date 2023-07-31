@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DB } from 'src/db/db.service';
+import { DB, FavoriteEntities } from 'src/db/db.service';
 import { UpdateArtistDto, CreateArtistDto, ArtistDto } from './dto';
+import { FavoriteService } from 'src/favorite/favorite.service';
 
 @Injectable()
 export class ArtistService {
-  constructor(private db: DB) {}
+  constructor(private db: DB, private favoriteService: FavoriteService) {}
   findAll() {
     return this.db.artists;
   }
@@ -39,6 +40,7 @@ export class ArtistService {
   delete(id: string) {
     const artistIndex = this.db.artists.findIndex((artist) => artist.id === id);
     const targetArtist = this.db.artists[artistIndex];
+    this.favoriteService.removeIdByDeleting(id, FavoriteEntities.Artist);
     if (artistIndex === -1) {
       throw new NotFoundException(`Artist with id ${id} not found`);
     }

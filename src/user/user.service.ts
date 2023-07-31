@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { User, UserWithoutPassword } from './interfaces/user.interface';
+import { User } from './interfaces/user.interface';
 import { CreateUserDto, UpdateUserPasswordDto, UserDto } from './dto';
 import { DB } from 'src/db/db.service';
 
@@ -14,24 +14,22 @@ export class UserService {
     return this.db.users;
   }
 
-  getById(id: string): UserWithoutPassword {
+  getById(id: string): UserDto {
     const userIndex = this.db.users.findIndex((user) => user.id === id);
     if (userIndex === -1) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
     const user = this.db.users[userIndex];
-    const { password, ...rest } = user;
-    return rest;
+    return user;
   }
 
-  create(dto: CreateUserDto): UserWithoutPassword {
+  create(dto: CreateUserDto): UserDto {
     const newUser = new UserDto(dto);
     this.db.users.push(newUser);
-    const { password, ...rest } = newUser;
-    return rest;
+    return newUser;
   }
 
-  update(dto: UpdateUserPasswordDto, id: string): UserWithoutPassword {
+  update(dto: UpdateUserPasswordDto, id: string): UserDto {
     const userIndex = this.db.users.findIndex((user) => user.id === id);
     if (userIndex === -1) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -43,8 +41,7 @@ export class UserService {
     user.password = dto.newPassword;
     user.version += 1;
     user.updatedAt = new Date().getTime();
-    const { password, ...rest } = user;
-    return rest;
+    return user;
   }
 
   delete(id: string) {
