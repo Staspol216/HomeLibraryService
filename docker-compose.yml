@@ -10,7 +10,7 @@ services:
       - database
     restart: always
     environment:
-      DATABASE_URL: postgres://staspol:password@postgres:5432/${POSTGRES_DB}
+      DATABASE_URL: postgres://staspol:password@postgres:5432/mydb
     volumes:
       - .:/app/src
     ports:
