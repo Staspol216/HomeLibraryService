@@ -1,0 +1,5 @@
+FROM postgres
+
+ENV POSTGRES_DB mydb
+ENV POSTGRES_USER staspol
+ENV POSTGRES_PASSWORD password

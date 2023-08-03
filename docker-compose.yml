@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend: 
+    container_name: backend
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    restart: always
+    environment:
+      DATABASE_URL: postgres://staspol:password@postgres:5432/${POSTGRES_DB}
+    volumes:
+      - .:/app/src
+    ports:
+      - 4000:4000
+  database:
+    container_name: postgres-database
+    build: ./postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    restart: always
+
