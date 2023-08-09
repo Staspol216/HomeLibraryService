@@ -6,12 +6,19 @@ import {
 import { User } from './interfaces/user.interface';
 import { CreateUserDto, UpdateUserPasswordDto, UserDto } from './dto';
 import { DB } from 'src/db/db.service';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable({})
 export class UserService {
-  constructor(private db: DB) {}
-  findAll(): User[] {
-    return this.db.users;
+  constructor(
+    @InjectRepository(UserEntity) private userRepository: Repository<User>,
+    private db: DB,
+  ) {}
+
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find();
   }
 
   getById(id: string): UserDto {

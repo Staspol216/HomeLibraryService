@@ -10,10 +10,11 @@ export class UserDto {
   password: string;
 
   version: number;
+
   createdAt: number;
   updatedAt: number;
 
-  constructor(dto: CreateUserDto) {
+  constructor(dto: Partial<UserDto>) {
     const timestamp = new Date().getTime();
     this.id = uuidv4();
     this.login = dto.login;

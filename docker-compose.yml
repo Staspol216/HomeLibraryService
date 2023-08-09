@@ -1,26 +1,33 @@
 version: '3.8'
 
 services:
-  backend: 
+  backend:
     container_name: backend
-    build: 
+    build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - ${PORT}:${PORT}
     depends_on:
-      - database
-    restart: always
-    environment:
-      DATABASE_URL: postgres://staspol:password@postgres:5432/mydb
+      - postgres
+    networks:
+      - home-library-network
     volumes:
-      - .:/app/src
-    ports:
-      - 4000:4000
-  database:
-    container_name: postgres-database
-    build: ./postgres
-    ports:
-      - 5432:5432
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
-    restart: always
+      - ./:/usr/app
 
+  postgres:
+    container_name: postgres-database
+    build:
+      context: .
+      dockerfile: ./postgres/Dockerfile
+    restart: always
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    networks:
+      - home-library-network
+    volumes:
+      - ./docker/db/data:/var/lib/postgresql/data/
+networks:
+  home-library-network:
+    driver: bridge
