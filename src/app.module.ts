@@ -7,7 +7,6 @@ import { AlbumModule } from './album/album.module';
 import { FavoriteModule } from './favorite/favorite.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserDto } from './user/dto';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,7 +19,6 @@ import { UserDto } from './user/dto';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      entities: [UserDto],
       autoLoadEntities: true,
       synchronize: true,
     }),
