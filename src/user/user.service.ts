@@ -36,10 +36,7 @@ export class UserService {
     return await this.userRepository.save(newUser);
   }
 
-  async update(
-    dto: UpdateUserPasswordDto,
-    id: string,
-  ): Promise<Omit<IUser, 'password'>> {
+  async update(dto: UpdateUserPasswordDto, id: string): Promise<IUser> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);

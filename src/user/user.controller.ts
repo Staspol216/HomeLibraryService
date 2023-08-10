@@ -40,7 +40,7 @@ export class UserController {
   async update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() dto: UpdateUserPasswordDto,
-  ): Promise<Omit<IUser, 'password'>> {
+  ): Promise<IUser> {
     const user = await this.userService.update(dto, uuid);
     return user;
   }
