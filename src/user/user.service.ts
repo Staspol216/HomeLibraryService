@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { IUser } from './interfaces/user.interface';
 import { CreateUserDto, UpdateUserPasswordDto } from './dto';
-import { DB } from 'src/db/db.service';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -16,7 +15,6 @@ import { User } from './entities/user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private db: DB,
   ) {}
 
   async findAll(): Promise<IUser[]> {
@@ -57,6 +55,6 @@ export class UserService {
     if (result.affected === 0) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    return '';
+    return 'Deleted';
   }
 }

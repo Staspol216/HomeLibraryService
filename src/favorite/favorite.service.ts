@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { DB } from 'src/db/db.service';
 import { Album } from 'src/album/interfaces/album.interface';
-import { Artist } from 'src/artist/interfaces/artist.interface';
+import { IArtist } from 'src/artist/interfaces/artist.interface';
 import { Track } from 'src/track/interfaces/track.interface';
 import { FavoritesResponse } from './interfaces/favorite.interface';
 
@@ -19,7 +19,7 @@ export class FavoriteService {
       result[entity] = this.db.favorites[entity]
         .map((id: string) => {
           const itemById = this.db[entity].find(
-            (item: Album | Artist | Track) => item.id === id,
+            (item: Album | IArtist | Track) => item.id === id,
           );
           if (itemById) return itemById;
         })

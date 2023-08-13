@@ -1,60 +1,73 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { DB, FavoriteEntities } from 'src/db/db.service';
-import { UpdateArtistDto, CreateArtistDto, ArtistDto } from './dto';
+import {
+  ClassSerializerInterceptor,
+  Injectable,
+  NotFoundException,
+  UseInterceptors,
+} from '@nestjs/common';
+import { UpdateArtistDto, CreateArtistDto } from './dto';
 import { FavoriteService } from 'src/favorite/favorite.service';
+import { Artist } from './entities/artist.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { IArtist } from './interfaces/artist.interface';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Injectable()
 export class ArtistService {
-  constructor(private db: DB, private favoriteService: FavoriteService) {}
-  findAll() {
-    return this.db.artists;
-  }
-  getById(id: string) {
-    const artistIndex = this.db.artists.findIndex((track) => track.id === id);
-    if (artistIndex === -1) {
-      throw new NotFoundException(`Track with id ${id} not found`);
-    }
-    const artist = this.db.artists[artistIndex];
-    return artist;
-  }
-  create(dto: CreateArtistDto) {
-    const artist = new ArtistDto(dto);
-    this.db.artists.push(artist);
-    return artist;
+  constructor(
+    @InjectRepository(Artist) private artistRepository: Repository<Artist>,
+    private favoriteService: FavoriteService,
+  ) {}
+
+  async findAll(): Promise<IArtist[]> {
+    return await this.artistRepository.find();
   }
 
-  update(dto: UpdateArtistDto, id: string) {
-    const artistIndex = this.db.artists.findIndex((track) => track.id === id);
-    if (artistIndex === -1) {
-      throw new NotFoundException(`Track with id ${id} not found`);
-    }
-    const targetArtist = this.db.artists[artistIndex];
-    const updatedArtist = {
-      ...targetArtist,
-      ...dto,
-    };
-    this.db.artists.splice(artistIndex, 1, updatedArtist);
-    return updatedArtist;
-  }
-
-  delete(id: string) {
-    const artistIndex = this.db.artists.findIndex((artist) => artist.id === id);
-    const targetArtist = this.db.artists[artistIndex];
-    this.favoriteService.removeIdByDeleting(id, FavoriteEntities.Artist);
-    if (artistIndex === -1) {
+  async getById(id: string): Promise<IArtist> {
+    try {
+      return await this.artistRepository.findOneOrFail({ where: { id } });
+    } catch (err) {
       throw new NotFoundException(`Artist with id ${id} not found`);
     }
-    this.db.artists.splice(artistIndex, 1);
-    this.db.albums.forEach((album) => {
-      if (album.artistId === targetArtist.id) {
-        album.artistId = null;
-      }
+  }
+
+  async create(dto: CreateArtistDto) {
+    const newArtist = new Artist(dto);
+    return await this.artistRepository.save(newArtist);
+  }
+
+  async update(dto: UpdateArtistDto, id: string) {
+    const artist = await this.artistRepository.findOne({ where: { id } });
+    if (!artist) {
+      throw new NotFoundException(`Artist with id ${id} not found`);
+    }
+    const updatedArtist = await this.artistRepository.save({
+      ...artist,
+      ...dto,
     });
-    this.db.tracks.forEach((track) => {
-      if (track.artistId === targetArtist.id) {
-        track.artistId = null;
-      }
-    });
+    return new Artist(updatedArtist);
+  }
+
+  async delete(id: string) {
+    const result = await this.artistRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Artist with id ${id} not found`);
+    }
+    // this.favoriteService.removeIdByDeleting(id, FavoriteEntities.Artist);
+    // if (artistIndex === -1) {
+    //   throw new NotFoundException(`Artist with id ${id} not found`);
+    // }
+    // this.db.artists.splice(artistIndex, 1);
+    // this.db.albums.forEach((album) => {
+    //   if (album.artistId === targetArtist.id) {
+    //     album.artistId = null;
+    //   }
+    // });
+    // this.db.tracks.forEach((track) => {
+    //   if (track.artistId === targetArtist.id) {
+    //     track.artistId = null;
+    //   }
+    // });
     return `Artist with id ${id} has been deleted`;
   }
 }

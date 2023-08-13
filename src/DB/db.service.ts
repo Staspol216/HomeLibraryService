@@ -1,5 +1,5 @@
 import { Album } from 'src/album/interfaces/album.interface';
-import { Artist } from 'src/artist/interfaces/artist.interface';
+import { IArtist } from 'src/artist/interfaces/artist.interface';
 import { Track } from 'src/track/interfaces/track.interface';
 import { IUser } from 'src/user/interfaces/user.interface';
 
@@ -18,7 +18,7 @@ interface Favorites {
 export class DB {
   users: IUser[] = [];
   tracks: Track[] = [];
-  artists: Artist[] = [];
+  artists: IArtist[] = [];
   albums: Album[] = [];
   favorites: Favorites = {
     artists: [],
