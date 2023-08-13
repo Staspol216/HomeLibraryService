@@ -1,6 +1,6 @@
-import { Album } from 'src/album/interfaces/album.interface';
+import { IAlbum } from 'src/album/interfaces/album.interface';
 import { IArtist } from 'src/artist/interfaces/artist.interface';
-import { Track } from 'src/track/interfaces/track.interface';
+import { ITrack } from 'src/track/interfaces/track.interface';
 import { IUser } from 'src/user/interfaces/user.interface';
 
 export enum FavoriteEntities {
@@ -17,9 +17,9 @@ interface Favorites {
 
 export class DB {
   users: IUser[] = [];
-  tracks: Track[] = [];
+  tracks: ITrack[] = [];
   artists: IArtist[] = [];
-  albums: Album[] = [];
+  albums: IAlbum[] = [];
   favorites: Favorites = {
     artists: [],
     albums: [],

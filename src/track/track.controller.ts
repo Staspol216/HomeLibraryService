@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { CreateTrackDto, UpdateTrackDto } from './dto/track.dto';
-import { Track } from './interfaces/track.interface';
+import { ITrack } from './interfaces/track.interface';
 import { TrackService } from './track.service';
 import {
   Body,
@@ -18,12 +18,12 @@ export class TrackController {
   constructor(private trackService: TrackService) {}
 
   @Get()
-  async findAll(): Promise<Track[]> {
+  async findAll(): Promise<ITrack[]> {
     return this.trackService.findAll();
   }
 
   @Get(':uuid')
-  async getById(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<Track> {
+  async getById(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<ITrack> {
     return this.trackService.getById(uuid);
   }
 
@@ -37,7 +37,7 @@ export class TrackController {
   async update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() dto: UpdateTrackDto,
-  ): Promise<Track> {
+  ): Promise<ITrack> {
     return this.trackService.update(dto, uuid);
   }
 

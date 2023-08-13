@@ -1,52 +1,52 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DB, FavoriteEntities } from 'src/db/db.service';
-import { Track } from './interfaces/track.interface';
-import { CreateTrackDto, TrackDto } from './dto';
+import { ITrack } from './interfaces/track.interface';
+import { CreateTrackDto } from './dto';
 import { FavoriteService } from 'src/favorite/favorite.service';
+import { Track } from './entities/track.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TrackService {
-  constructor(private db: DB, private favoriteService: FavoriteService) {}
-  findAll() {
-    return this.db.tracks;
-  }
-  getById(id: string) {
-    const trackIndex = this.db.tracks.findIndex((track) => track.id === id);
-    if (trackIndex === -1) {
-      throw new NotFoundException(`Track with id ${id} not found`);
-    }
-    const track = this.db.tracks[trackIndex];
-    return track;
-  }
-  create(dto: CreateTrackDto) {
-    const track = new TrackDto(dto);
-    this.db.tracks.push(track);
-    return track;
+  constructor(
+    @InjectRepository(Track) private trackRepository: Repository<Track>,
+    private favoriteService: FavoriteService,
+  ) {}
+
+  async findAll() {
+    return await this.trackRepository.find();
   }
 
-  update(dto: Partial<Track>, id: string) {
-    const trackIndex = this.db.tracks.findIndex((track) => track.id === id);
-    if (trackIndex === -1) {
+  async getById(id: string) {
+    try {
+      return await this.trackRepository.findOneOrFail({ where: { id } });
+    } catch (err) {
       throw new NotFoundException(`Track with id ${id} not found`);
     }
-    const targetTrack = this.db.tracks[trackIndex];
-    const updatedTrack = {
-      ...targetTrack,
+  }
+
+  async create(dto: CreateTrackDto) {
+    const newArtist = new Track(dto);
+    return await this.trackRepository.save(newArtist);
+  }
+
+  async update(dto: Partial<ITrack>, id: string) {
+    const track = await this.trackRepository.findOne({ where: { id } });
+    if (!track) {
+      throw new NotFoundException(`Track with id ${id} not found`);
+    }
+    const updatedTrack = await this.trackRepository.save({
+      ...track,
       ...dto,
-    };
-    this.db.tracks.splice(trackIndex, 1, updatedTrack);
-    return updatedTrack;
+    });
+    return new Track(updatedTrack);
   }
 
-  delete(id: string) {
-    const trackIndex = this.db.tracks.findIndex((track) => track.id === id);
-    if (trackIndex === -1) {
+  async delete(id: string) {
+    const result = await this.trackRepository.delete(id);
+    if (result.affected === 0) {
       throw new NotFoundException(`Track with id ${id} not found`);
     }
-
-    this.favoriteService.removeIdByDeleting(id, FavoriteEntities.Tracks);
-
-    this.db.tracks.splice(trackIndex, 1);
-    return `Track with id ${id} has been deleted`;
+    return 'Deleted';
   }
 }

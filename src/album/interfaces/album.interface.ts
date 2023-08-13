@@ -1,6 +1,8 @@
-export interface Album {
+import { Artist } from 'src/artist/entities/artist.entity';
+
+export interface IAlbum {
   id: string;
   name: string;
   year: number;
-  artistId: string | null;
+  artist: Artist;
 }

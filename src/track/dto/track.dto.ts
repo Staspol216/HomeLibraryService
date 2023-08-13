@@ -1,21 +1,4 @@
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { v4 as uuidv4 } from 'uuid';
-
-export class TrackDto {
-  id: string;
-  name: string;
-  duration: number;
-  albumId: string;
-  artistId: string;
-
-  constructor(dto: CreateTrackDto) {
-    this.id = uuidv4();
-    this.name = dto.name;
-    this.duration = dto.duration;
-    this.albumId = dto?.albumId || null;
-    this.artistId = dto?.artistId || null;
-  }
-}
 
 export class CreateTrackDto {
   @IsString()

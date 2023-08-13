@@ -4,9 +4,9 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { DB } from 'src/db/db.service';
-import { Album } from 'src/album/interfaces/album.interface';
+import { IAlbum } from 'src/album/interfaces/album.interface';
 import { IArtist } from 'src/artist/interfaces/artist.interface';
-import { Track } from 'src/track/interfaces/track.interface';
+import { ITrack } from 'src/track/interfaces/track.interface';
 import { FavoritesResponse } from './interfaces/favorite.interface';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class FavoriteService {
       result[entity] = this.db.favorites[entity]
         .map((id: string) => {
           const itemById = this.db[entity].find(
-            (item: Album | IArtist | Track) => item.id === id,
+            (item: IAlbum | IArtist | ITrack) => item.id === id,
           );
           if (itemById) return itemById;
         })

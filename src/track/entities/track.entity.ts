@@ -1,20 +1,38 @@
 // import { Entity } from 'typeorm';
 
-// @Entity('track')
-// export class Track {
-//   @PrimaryGeneratedColumn('uuid')
-//   id: string;
+import { Album } from 'src/album/entities/album.entity';
+import { Artist } from 'src/artist/entities/artist.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-//   name: string;
-//   duration: number;
-//   albumId: string;
-//   artistId: string;
+@Entity('track')
+export class Track {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-//   constructor(dto: Track) {
-//     this.id = uuidv4();
-//     this.name = dto.name;
-//     this.duration = dto.duration;
-//     this.albumId = dto?.albumId || null;
-//     this.artistId = dto?.artistId || null;
-//   }
-// }
+  @Column('varchar')
+  name: string;
+
+  @Column('int')
+  duration: number;
+
+  @Column({ nullable: true })
+  albumId: string | null;
+
+  @Column({ nullable: true })
+  artistId: string | null;
+
+  @ManyToOne(() => Album, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  album: Album;
+
+  @ManyToOne(() => Artist, {
+    onDelete: 'SET NULL',
+  })
+  artist: Artist;
+
+  constructor(partial: Partial<Track>) {
+    Object.assign(this, partial);
+  }
+}
