@@ -23,7 +23,6 @@ export class Track {
 
   @ManyToOne(() => Album, {
     onDelete: 'SET NULL',
-    nullable: true,
   })
   album: Album;
 
