@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
-import { DBModule } from './db/db.module';
 import { TrackModule } from './track/track.module';
 import { ArtistModule } from './artist/artist.module';
 import { AlbumModule } from './album/album.module';
@@ -18,13 +17,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       port: +process.env.POSTGRES_PORT,
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DATABASE,
+      database: process.env.POSTGRES_DB,
       autoLoadEntities: true,
       synchronize: true,
     }),
     UserModule,
     TrackModule,
-    DBModule,
     ArtistModule,
     AlbumModule,
     FavoriteModule,
