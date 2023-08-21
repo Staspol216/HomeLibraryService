@@ -9,6 +9,7 @@ import { IUser } from './interfaces/user.interface';
 import { CreateUserDto, UpdateUserPasswordDto } from './dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable({})
@@ -21,6 +22,10 @@ export class UserService {
     return this.userRepository.find();
   }
 
+  async findByLogin(login: string): Promise<User> {
+    return this.userRepository.findOne({ where: { login } });
+  }
+
   async getById(id: string): Promise<IUser> {
     try {
       return await this.userRepository.findOneOrFail({ where: { id } });
@@ -30,8 +35,15 @@ export class UserService {
   }
 
   async create(dto: CreateUserDto): Promise<IUser> {
-    const newUser = new User(dto);
-    return await this.userRepository.save(newUser);
+    const { login, password } = dto;
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const registerUserDto = {
+      login,
+      password: hashedPassword,
+    };
+    const newUser = new User(registerUserDto);
+    return this.userRepository.save(newUser);
   }
 
   async update(dto: UpdateUserPasswordDto, id: string): Promise<IUser> {
