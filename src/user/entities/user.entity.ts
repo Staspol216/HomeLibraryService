@@ -32,6 +32,10 @@ export class User {
   @Transform(({ value }) => value.getTime())
   updatedAt: Date;
 
+  @Exclude()
+  @Column({ nullable: true })
+  refreshToken: string;
+
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);
   }
