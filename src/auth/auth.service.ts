@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto';
 import { IUser } from 'src/user/interfaces/user.interface';
 import { UserService } from 'src/user/user.service';
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -15,10 +14,79 @@ export class AuthService {
 
     const user = await this.userService.findByLogin(login);
 
-    const payload = { sub: user.id, login: user.login };
-    const accessToken = await this.jwtService.signAsync(payload);
+    const tokens = await this.getTokens(user.id, user.login);
 
-    return { access_token: accessToken };
+    await this.userService.update(user.id, {
+      refreshToken: tokens.refreshToken,
+    });
+
+    return tokens;
+  }
+
+  async signup(signUpDto: CreateUserDto) {
+    const newUser = await this.userService.create(signUpDto);
+
+    const { refreshToken } = await this.getTokens(newUser.id, newUser.login);
+
+    await this.userService.update(newUser.id, {
+      refreshToken,
+    });
+
+    return newUser;
+  }
+
+  async refresh(refreshToken: string) {
+    const payload = await this.verifyToken(refreshToken);
+
+    const user = await this.userService.getById(payload.userId);
+    if (refreshToken !== user.refreshToken)
+      throw new ForbiddenException('Access denied');
+
+    const tokens = await this.getTokens(payload.userId, payload.login);
+    this.userService.update(payload.userId, {
+      refreshToken: tokens.refreshToken,
+    });
+    return tokens;
+  }
+
+  async verifyToken(refreshToken) {
+    try {
+      return await this.jwtService.verifyAsync(refreshToken, {
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+      });
+    } catch (e) {
+      throw new ForbiddenException(e);
+    }
+  }
+
+  async getTokens(userId: string, login: string) {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          userId,
+          login,
+        },
+        {
+          secret: process.env.JWT_SECRET_KEY,
+          expiresIn: '1h',
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          userId,
+          login,
+        },
+        {
+          secret: process.env.JWT_SECRET_REFRESH_KEY,
+          expiresIn: '7d',
+        },
+      ),
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   async validateUser(login: string, password: string): Promise<IUser | null> {

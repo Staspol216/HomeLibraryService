@@ -2,7 +2,9 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  HttpCode,
   Post,
+  Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -11,6 +13,8 @@ import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/dto';
 import { Public } from './public.decorator';
 import { LocalAuthGuard } from './local-auth.guard';
+import { RefreshGuard } from './refresh-auth.guard';
+import { StatusCodes } from 'http-status-codes';
 
 @Public()
 @UseInterceptors(ClassSerializerInterceptor)
@@ -29,6 +33,14 @@ export class AuthController {
 
   @Post('signup')
   async signUp(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    return this.authService.signup(createUserDto);
+  }
+
+  @UseGuards(RefreshGuard)
+  @Post('refresh')
+  @HttpCode(StatusCodes.OK)
+  async refresh(@Req() req) {
+    const refreshToken = req.body?.refreshToken;
+    return this.authService.refresh(refreshToken);
   }
 }
