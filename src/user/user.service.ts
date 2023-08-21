@@ -9,8 +9,8 @@ import { IUser } from './interfaces/user.interface';
 import { CreateUserDto, UpdateUserPasswordDto } from './dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable({})
 export class UserService {
@@ -34,32 +34,42 @@ export class UserService {
     }
   }
 
-  async create(dto: CreateUserDto): Promise<IUser> {
-    const { login, password } = dto;
+  async create(createUserDto: CreateUserDto): Promise<IUser> {
+    const { password } = createUserDto;
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
-    const registerUserDto = {
-      login,
-      password: hashedPassword,
-    };
-    const newUser = new User(registerUserDto);
+    const newUser = new User({ ...createUserDto, password: hashedPassword });
     return this.userRepository.save(newUser);
   }
 
-  async update(dto: UpdateUserPasswordDto, id: string): Promise<IUser> {
+  async updatePassword(dto: UpdateUserPasswordDto, id: string): Promise<IUser> {
     const user = await this.userRepository.findOne({ where: { id } });
+
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    if (dto.oldPassword !== user.password) {
+    const isEqual = await bcrypt.compare(dto.oldPassword, user.password);
+
+    if (!isEqual) {
       throw new ForbiddenException('Incorrect exist password');
     }
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(dto.newPassword, salt);
+
     const updatedUser = await this.userRepository.save({
       ...user,
-      password: dto.newPassword,
+      password: hashedPassword,
       version: user.version + 1,
     });
     return new User(updatedUser);
+  }
+
+  async update(id: string, updateUserDto: any) {
+    return this.userRepository.save({
+      id,
+      ...updateUserDto,
+    });
   }
 
   async delete(id: string) {
