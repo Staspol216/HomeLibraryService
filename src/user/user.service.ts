@@ -11,14 +11,20 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { Logger } from 'src/logger/logger.service';
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable({})
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-  ) {}
+    private logger: Logger,
+  ) {
+    this.logger.setContext('UserService');
+  }
 
   async findAll(): Promise<IUser[]> {
+    this.logger.log('Doing something...');
+    this.logger.customLog();
     return this.userRepository.find();
   }
 
