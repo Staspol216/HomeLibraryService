@@ -10,7 +10,6 @@ import { Repository } from 'typeorm';
 export class TrackService {
   constructor(
     @InjectRepository(Track) private trackRepository: Repository<Track>,
-    private favoriteService: FavoriteService,
   ) {}
 
   async findAll() {
