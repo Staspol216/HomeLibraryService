@@ -21,8 +21,4 @@ export class Logger extends ConsoleLogger {
   verbose(message: any, ...optionalParams: any[]) {
     super.verbose(arguments);
   }
-
-  customLog() {
-    this.log('Custom log');
-  }
 }
