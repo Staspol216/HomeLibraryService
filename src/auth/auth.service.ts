@@ -39,8 +39,9 @@ export class AuthService {
     const payload = await this.verifyToken(refreshToken);
 
     const user = await this.userService.getById(payload.userId);
-    if (refreshToken !== user.refreshToken)
+    if (refreshToken !== user.refreshToken) {
       throw new ForbiddenException('Access denied');
+    }
 
     const tokens = await this.getTokens(payload.userId, payload.login);
     this.userService.update(payload.userId, {

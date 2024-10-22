@@ -12,8 +12,8 @@ import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/dto';
 import { Public } from './public.decorator';
-import { LocalAuthGuard } from './local-auth.guard';
-import { RefreshGuard } from './refresh-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RefreshGuard } from './guards/refresh-auth.guard';
 import { StatusCodes } from 'http-status-codes';
 
 @Public()
