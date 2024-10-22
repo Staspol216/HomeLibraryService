@@ -1,7 +1,12 @@
-import { Injectable, ConsoleLogger, Scope } from '@nestjs/common';
+import { Injectable, ConsoleLogger, Scope, LoggerService, LogLevel } from '@nestjs/common';
 
 @Injectable({ scope: Scope.TRANSIENT })
-export class Logger extends ConsoleLogger {
+export class Logger extends ConsoleLogger implements LoggerService {
+  constructor() {
+    super();
+    this.setLogLevels(['verbose']);
+  }
+
   log(message: any, ...optionalParams: any[]) {
     super.log(arguments);
   }

@@ -9,7 +9,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { LoggerModule } from './logger/logger.module';
-import { UncaughtModule } from './exceptions/uncaught-handler.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,7 +31,6 @@ import { UncaughtModule } from './exceptions/uncaught-handler.module';
     FavoriteModule,
     AuthModule,
     LoggerModule,
-    UncaughtModule,
   ],
 })
 export class AppModule implements NestModule {
