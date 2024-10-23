@@ -7,10 +7,13 @@ import {
   Post,
   Controller,
   ParseUUIDPipe,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { FavoritesResponse } from './interfaces/favorite.interface';
 import { StatusCodes } from 'http-status-codes';
-import { FavoriteEntities } from 'src/db/db.service';
+
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('favs')
 export class FavoriteController {
   constructor(private favoriteService: FavoriteService) {}
@@ -23,45 +26,36 @@ export class FavoriteController {
   @Post('track/:uuid')
   @HttpCode(StatusCodes.CREATED)
   async addTrackToFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.addToFavorite(uuid, FavoriteEntities.Tracks);
+    return this.favoriteService.addTrackToFavorites(uuid);
   }
 
   @Delete('track/:uuid')
   @HttpCode(StatusCodes.NO_CONTENT)
   async removeTrackFromFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.removeFromFavorite(
-      uuid,
-      FavoriteEntities.Tracks,
-    );
+    return this.favoriteService.removeTrackFromFav(uuid);
   }
 
   @Post('artist/:uuid')
   @HttpCode(StatusCodes.CREATED)
   async addArtistToFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.addToFavorite(uuid, FavoriteEntities.Artist);
+    return this.favoriteService.addArtistToFavorites(uuid);
   }
 
   @Delete('artist/:uuid')
   @HttpCode(StatusCodes.NO_CONTENT)
   async removeArtistFromFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.removeFromFavorite(
-      uuid,
-      FavoriteEntities.Artist,
-    );
+    return this.favoriteService.removeArtistFromFav(uuid);
   }
 
   @Post('album/:uuid')
   @HttpCode(StatusCodes.CREATED)
   async addAlbumToFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.addToFavorite(uuid, FavoriteEntities.Albums);
+    return this.favoriteService.addAlbumToFavorites(uuid);
   }
 
   @Delete('album/:uuid')
   @HttpCode(StatusCodes.NO_CONTENT)
   async removeAlbumFromFav(@Param('uuid', ParseUUIDPipe) uuid: string) {
-    return this.favoriteService.removeFromFavorite(
-      uuid,
-      FavoriteEntities.Albums,
-    );
+    return this.favoriteService.removeAlbumFromFav(uuid);
   }
 }

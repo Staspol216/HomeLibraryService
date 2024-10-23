@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
+    networks:
+      - home-library-network
+    volumes:
+      - ./:/usr/src/app
+
+  postgres:
+    container_name: postgres-database
+    build:
+      context: .
+      dockerfile: ./postgres/Dockerfile
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    networks:
+      - home-library-network
+    volumes:
+      - ./docker/db/data:/var/lib/postgresql/data/
+networks:
+  home-library-network:
+    driver: bridge
