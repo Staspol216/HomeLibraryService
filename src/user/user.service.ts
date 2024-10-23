@@ -1,55 +1,60 @@
 import {
+  ClassSerializerInterceptor,
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UseInterceptors,
 } from '@nestjs/common';
-import { User } from './interfaces/user.interface';
-import { CreateUserDto, UpdateUserPasswordDto, UserDto } from './dto';
-import { DB } from 'src/db/db.service';
-
+import { IUser } from './interfaces/user.interface';
+import { CreateUserDto, UpdateUserPasswordDto } from './dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+@UseInterceptors(ClassSerializerInterceptor)
 @Injectable({})
 export class UserService {
-  constructor(private db: DB) {}
-  findAll(): User[] {
-    return this.db.users;
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
+
+  async findAll(): Promise<IUser[]> {
+    return this.userRepository.find();
   }
 
-  getById(id: string): UserDto {
-    const userIndex = this.db.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
+  async getById(id: string): Promise<IUser> {
+    try {
+      return await this.userRepository.findOneOrFail({ where: { id } });
+    } catch (err) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    const user = this.db.users[userIndex];
-    return user;
   }
 
-  create(dto: CreateUserDto): UserDto {
-    const newUser = new UserDto(dto);
-    this.db.users.push(newUser);
-    return newUser;
+  async create(dto: CreateUserDto): Promise<IUser> {
+    const newUser = new User(dto);
+    return await this.userRepository.save(newUser);
   }
 
-  update(dto: UpdateUserPasswordDto, id: string): UserDto {
-    const userIndex = this.db.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
+  async update(dto: UpdateUserPasswordDto, id: string): Promise<IUser> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    const user = this.db.users[userIndex];
     if (dto.oldPassword !== user.password) {
       throw new ForbiddenException('Incorrect exist password');
     }
-    user.password = dto.newPassword;
-    user.version += 1;
-    user.updatedAt = new Date().getTime();
-    return user;
+    const updatedUser = await this.userRepository.save({
+      ...user,
+      password: dto.newPassword,
+      version: user.version + 1,
+    });
+    return new User(updatedUser);
   }
 
-  delete(id: string) {
-    const userIndex = this.db.users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
+  async delete(id: string) {
+    const result = await this.userRepository.delete(id);
+    if (result.affected === 0) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    this.db.users.splice(userIndex, 1);
-    return '';
+    return 'Deleted';
   }
 }

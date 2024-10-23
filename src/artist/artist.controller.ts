@@ -1,5 +1,5 @@
 import { CreateArtistDto, UpdateArtistDto } from './dto';
-import { Artist } from './interfaces/artist.interface';
+import { IArtist } from './interfaces/artist.interface';
 import { ArtistService } from './artist.service';
 import {
   Body,
@@ -11,19 +11,22 @@ import {
   Put,
   Controller,
   ParseUUIDPipe,
+  ClassSerializerInterceptor,
+  UseInterceptors,
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('artist')
 export class ArtistController {
   constructor(private artistService: ArtistService) {}
 
   @Get()
-  async findAll(): Promise<Artist[]> {
+  async findAll(): Promise<IArtist[]> {
     return this.artistService.findAll();
   }
 
   @Get(':uuid')
-  async getById(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<Artist> {
+  async getById(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<IArtist> {
     return this.artistService.getById(uuid);
   }
 
@@ -37,7 +40,7 @@ export class ArtistController {
   async update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() dto: UpdateArtistDto,
-  ): Promise<Artist> {
+  ): Promise<IArtist> {
     return this.artistService.update(dto, uuid);
   }
 

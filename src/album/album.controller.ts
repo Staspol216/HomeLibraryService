@@ -1,5 +1,5 @@
 import { CreateAlbumDto, UpdateAlbumDto } from './dto';
-import { Album } from './interfaces/album.interface';
+import { IAlbum } from './interfaces/album.interface';
 import { AlbumService } from './album.service';
 import {
   Body,
@@ -15,35 +15,35 @@ import {
 import { StatusCodes } from 'http-status-codes';
 @Controller('album')
 export class AlbumController {
-  constructor(private artistService: AlbumService) {}
+  constructor(private albumService: AlbumService) {}
 
   @Get()
-  async findAll(): Promise<Album[]> {
-    return this.artistService.findAll();
+  async findAll(): Promise<IAlbum[]> {
+    return await this.albumService.findAll();
   }
 
   @Get(':uuid')
-  async getById(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<Album> {
-    return this.artistService.getById(uuid);
+  async getById(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<IAlbum> {
+    return await this.albumService.getById(uuid);
   }
 
   @Post()
   @HttpCode(StatusCodes.CREATED)
   async create(@Body() dto: CreateAlbumDto) {
-    return this.artistService.create(dto);
+    return await this.albumService.create(dto);
   }
 
   @Put(':uuid')
   async update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() dto: UpdateAlbumDto,
-  ): Promise<Album> {
-    return this.artistService.update(dto, uuid);
+  ): Promise<IAlbum> {
+    return await this.albumService.update(dto, uuid);
   }
 
   @Delete(':uuid')
   @HttpCode(StatusCodes.NO_CONTENT)
   async delete(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<string> {
-    return this.artistService.delete(uuid);
+    return await this.albumService.delete(uuid);
   }
 }
