@@ -1,0 +1,558 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+      "/user": {
+        "get": {
+          "operationId": "UserController_findAll",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "post": {
+          "operationId": "UserController_create",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/user/{uuid}": {
+        "get": {
+          "operationId": "UserController_getById",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "put": {
+          "operationId": "UserController_update",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserPasswordDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "UserController_delete",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/track": {
+        "get": {
+          "operationId": "TrackController_findAll",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "post": {
+          "operationId": "TrackController_create",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTrackDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/track/{uuid}": {
+        "get": {
+          "operationId": "TrackController_getById",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "put": {
+          "operationId": "TrackController_update",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateTrackDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "TrackController_delete",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/favs": {
+        "get": {
+          "operationId": "FavoriteController_findAll",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/favs/track/{uuid}": {
+        "post": {
+          "operationId": "FavoriteController_addTrackToFav",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "FavoriteController_removeTrackFromFav",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/favs/artist/{uuid}": {
+        "post": {
+          "operationId": "FavoriteController_addArtistToFav",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "FavoriteController_removeArtistFromFav",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/favs/album/{uuid}": {
+        "post": {
+          "operationId": "FavoriteController_addAlbumToFav",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "FavoriteController_removeAlbumFromFav",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/artist": {
+        "get": {
+          "operationId": "ArtistController_findAll",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "post": {
+          "operationId": "ArtistController_create",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateArtistDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/artist/{uuid}": {
+        "get": {
+          "operationId": "ArtistController_getById",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "put": {
+          "operationId": "ArtistController_update",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateArtistDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "ArtistController_delete",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/album": {
+        "get": {
+          "operationId": "AlbumController_findAll",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "post": {
+          "operationId": "AlbumController_create",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAlbumDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/album/{uuid}": {
+        "get": {
+          "operationId": "AlbumController_getById",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "put": {
+          "operationId": "AlbumController_update",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateAlbumDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "operationId": "AlbumController_delete",
+          "parameters": [
+            {
+              "name": "uuid",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "info": {
+      "title": "Home Library",
+      "description": "",
+      "version": "1.0",
+      "contact": {}
+    },
+    "tags": [],
+    "servers": [],
+    "components": {
+      "schemas": {
+        "CreateUserDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "UpdateUserPasswordDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "CreateTrackDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "UpdateTrackDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "CreateArtistDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "UpdateArtistDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "CreateAlbumDto": {
+          "type": "object",
+          "properties": {}
+        },
+        "UpdateAlbumDto": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    }
+  }
