@@ -15,6 +15,7 @@ services:
       - home-library-network
     volumes:
       - ./:/usr/src/app
+      - /usr/src/app/node_modules
 
   postgres:
     container_name: postgres-database

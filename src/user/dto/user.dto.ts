@@ -8,6 +8,8 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   password: string;
+
+  refreshToken: string;
 }
 
 export class UpdateUserPasswordDto {

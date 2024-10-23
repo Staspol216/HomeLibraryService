@@ -37,11 +37,11 @@ export class UserController {
   }
 
   @Put(':uuid')
-  async update(
+  async updatePassword(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() dto: UpdateUserPasswordDto,
   ): Promise<IUser> {
-    const user = await this.userService.update(dto, uuid);
+    const user = await this.userService.updatePassword(dto, uuid);
     return user;
   }
 
