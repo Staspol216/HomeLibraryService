@@ -2,7 +2,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { Logger } from './logger/logger.service';
+import { Logger } from './config/logger/logger.service';
 import { HttpExceptionFilter } from './exceptions/http-exception.filter';
 
 function initUncaughtHandlers(logger: Logger) {

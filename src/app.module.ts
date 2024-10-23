@@ -7,8 +7,7 @@ import { FavoriteModule } from './favorite/favorite.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { LoggerMiddleware } from './logger/logger.middleware';
-import { LoggerModule } from './logger/logger.module';
+import { LoggerMiddleware } from './config/logger/logger.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,11 +29,10 @@ import { LoggerModule } from './logger/logger.module';
     AlbumModule,
     FavoriteModule,
     AuthModule,
-    LoggerModule,
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer.apply(LoggerMiddleware).exclude('auth/(.*)').forRoutes('*');
   }
 }
