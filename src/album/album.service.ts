@@ -22,6 +22,9 @@ export class AlbumService {
   async create(dto: CreateAlbumDto): Promise<Album> {
     const newAlbum = new Album(dto);
     return await this.albumRepository.save(newAlbum);
+    // здесь можно попробовать более сложную логику реализовать, допустим нам нужно создать альбом
+    // с новым артистом, т.е. передать сразу данные для создания альбома и для создания артиста
+    // этот кейс предлагаю решить через транзакции в БД, чтобы в едином месте обработать два запроса на создание
   }
 
   async update(dto: UpdateAlbumDto, id: string): Promise<Album> {

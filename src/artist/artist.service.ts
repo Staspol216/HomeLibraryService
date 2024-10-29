@@ -68,6 +68,8 @@ export class ArtistService {
     //     track.artistId = null;
     //   }
     // });
+    // наверное это была попытка настроить каскадное удаление, давай попробуем с помощью декораторов @OneToMany, @ManyToOne или @OneToOne в typeOrm
+    // главное правильно описать связи между сущностями и можно использовать опцию { cascade: true } в декораторе @OneToMany, чтобы включить каскадное удаление.
     return `Artist with id ${id} has been deleted`;
   }
 }

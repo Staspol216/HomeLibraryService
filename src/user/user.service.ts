@@ -41,6 +41,7 @@ export class UserService {
     const newUser = new User({ ...createUserDto, password: hashedPassword });
     return this.userRepository.save(newUser);
   }
+  // Здесь не хватает дополнительной проверки и возврат типизированной ошибки про то что - Пользователь с таким login уже зарегистрирован
 
   async updatePassword(dto: UpdateUserPasswordDto, id: string): Promise<IUser> {
     const user = await this.userRepository.findOne({ where: { id } });
@@ -71,6 +72,8 @@ export class UserService {
       ...updateUserDto,
     });
   }
+// updateUserDto нужно типизировать типом/интерфейсом или классом dto
+// update сейчас используется только для обновления токена, но в принципе логика может быть расширена
 
   async delete(id: string) {
     const result = await this.userRepository.delete(id);
@@ -78,5 +81,8 @@ export class UserService {
       throw new NotFoundException(`User with id ${id} not found`);
     }
     return 'Deleted';
+    // здесь мы даем удалить пользователя по идентификатору, т.е. пользователь может удалить любого пользователя
+    // это не совсем безопасно, возможно такая проверка есть на фронте, но можно и здесь тоже добавить проверку
+    // например брать идентификатор данного юзера из контекста/запроса(из авторизации) и проверять его на разрешенность
   }
 }
