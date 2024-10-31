@@ -7,7 +7,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { IUser } from './interfaces/user.interface';
-import { CreateUserDto, UpdateUserPasswordDto } from './dto';
+import { CreateUserDto, UpdateUserDto, UpdateUserPasswordDto } from './dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -71,7 +71,7 @@ export class UserService {
     return new User(updatedUser);
   }
 
-  async update(id: string, updateUserDto: any) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     return this.userRepository.save({
       id,
       ...updateUserDto,
