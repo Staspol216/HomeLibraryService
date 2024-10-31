@@ -1,5 +1,6 @@
 import {
   ClassSerializerInterceptor,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -35,10 +36,14 @@ export class UserService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<IUser> {
-    const { password } = createUserDto;
+    const { password, login } = createUserDto;
+    const user = await this.findByLogin(login);
+    if (user) {
+      throw new ConflictException('Username already exists');
+    }
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
-    const newUser = new User({ ...createUserDto, password: hashedPassword });
+    const newUser = new User({ login, password: hashedPassword });
     return this.userRepository.save(newUser);
   }
   // Здесь не хватает дополнительной проверки и возврат типизированной ошибки про то что - Пользователь с таким login уже зарегистрирован
@@ -72,8 +77,8 @@ export class UserService {
       ...updateUserDto,
     });
   }
-// updateUserDto нужно типизировать типом/интерфейсом или классом dto
-// update сейчас используется только для обновления токена, но в принципе логика может быть расширена
+  // updateUserDto нужно типизировать типом/интерфейсом или классом dto
+  // update сейчас используется только для обновления токена, но в принципе логика может быть расширена
 
   async delete(id: string) {
     const result = await this.userRepository.delete(id);
