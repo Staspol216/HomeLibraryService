@@ -1,7 +1,6 @@
 import { Exclude, Transform } from 'class-transformer';
 import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { PrimaryGeneratedColumn } from 'typeorm/decorator/columns/PrimaryGeneratedColumn';
-import * as bcrypt from 'bcrypt';
 
 @Entity('user')
 export class User {
@@ -35,10 +34,6 @@ export class User {
   @Exclude()
   @Column({ nullable: true })
   refreshToken: string;
-
-  async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
-  }
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);
