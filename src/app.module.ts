@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './config/logger/logger.middleware';
+import { CaslModule } from './casl/casl.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +30,7 @@ import { LoggerMiddleware } from './config/logger/logger.middleware';
     AlbumModule,
     FavoriteModule,
     AuthModule,
+    CaslModule,
   ],
 })
 export class AppModule implements NestModule {
