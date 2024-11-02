@@ -27,11 +27,13 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @HttpCode(StatusCodes.OK)
   async signIn(@Body() signInDto: CreateUserDto) {
     return this.authService.login(signInDto);
   }
 
   @Post('signup')
+  @HttpCode(StatusCodes.OK)
   async signUp(@Body() createUserDto: CreateUserDto) {
     return this.authService.signup(createUserDto);
   }
