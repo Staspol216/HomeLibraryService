@@ -20,10 +20,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "typeorm": "ts-node ./node_modules/typeorm/cli",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
     "migration:run": "npm run typeorm migration:run -- -d ./src/config/datasources/typeorm.ts",
-    "migration:generate": "npm run typeorm -- -d ./src/config/datasources/typeorm.ts migration:generate ./src/migrations/$npm_config_name",
-    "migration:create": "npm run typeorm -- migration:create ./src/migrations/$npm_config_name",
+    "migration:generate": "npm run typeorm -- -d ./src/config/datasources/typeorm.ts migration:generate ./migrations/$npm_config_name",
+    "migration:create": "npm run typeorm -- migration:create ./migrations/$npm_config_name",
     "migration:revert": "npm run typeorm -- -d ./src/config/datasources/typeorm.ts migration:revert"
   },
   "dependencies": {
