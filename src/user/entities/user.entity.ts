@@ -13,6 +13,10 @@ export class User {
   @Exclude({ toPlainOnly: true })
   password: string;
 
+  @Column({ default: false })
+  @Exclude({ toPlainOnly: true })
+  isAdmin: boolean;
+
   @Column({ type: 'int', default: 1 })
   version: number;
 
