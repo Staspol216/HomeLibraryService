@@ -12,11 +12,13 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { AbilityFactory, Action } from 'src/ability/factory/ability.factory';
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable({})
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private abilityFactory: AbilityFactory,
   ) {}
 
   async findAll(): Promise<IUser[]> {
@@ -80,7 +82,13 @@ export class UserService {
   // updateUserDto нужно типизировать типом/интерфейсом или классом dto
   // update сейчас используется только для обновления токена, но в принципе логика может быть расширена
 
-  async delete(id: string) {
+  async delete(id: string, currentUser: User) {
+    const ability = this.abilityFactory.defineAbility(currentUser);
+    const userToDelete = await this.userRepository.findOne({ where: { id } });
+    const isAllowed = ability.can(Action.Delete, userToDelete);
+    if (!isAllowed) {
+      throw new ForbiddenException('You are not allowed to delete users');
+    }
     const result = await this.userRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`User with id ${id} not found`);
