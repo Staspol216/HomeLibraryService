@@ -1,12 +1,8 @@
 import { SetMetadata } from '@nestjs/common';
-import { Action, Subject } from './factory/ability.factory';
 
-export interface RequiredRule {
-  action: Action;
-  subject: Subject;
-}
+import { AbilityHandler } from './ability.guard';
 
 export const CHECK_ABILITY = 'check_ability';
 
-export const CheckAbilities = (...requirements: RequiredRule[]) =>
-  SetMetadata(CHECK_ABILITY, requirements);
+export const CheckAbilities = (...handlers: AbilityHandler[]) =>
+  SetMetadata(CHECK_ABILITY, handlers);

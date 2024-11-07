@@ -15,35 +15,39 @@ import {
 } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 import { CheckAbilities } from 'src/ability/ability.decorator';
-import { Action } from 'src/ability/factory/ability.factory';
-import { Album } from './entities/album.entity';
 import { AbilityGuard } from 'src/ability/ability.guard';
+import {
+  CreateAlbumAbilityHandler,
+  DeleteAlbumAbilityHandler,
+  ReadAlbumAbilityHandler,
+  UpdateAlbumAbilityHandler,
+} from 'src/ability/handlers/album';
 @UseGuards(AbilityGuard)
 @Controller('album')
 export class AlbumController {
   constructor(private albumService: AlbumService) {}
 
   @Get()
-  @CheckAbilities({ action: Action.Read, subject: Album })
+  @CheckAbilities(new ReadAlbumAbilityHandler())
   async findAll(): Promise<IAlbum[]> {
     return await this.albumService.findAll();
   }
 
   @Get(':uuid')
-  @CheckAbilities({ action: Action.Read, subject: Album })
+  @CheckAbilities(new ReadAlbumAbilityHandler())
   async getById(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<IAlbum> {
     return await this.albumService.getById(uuid);
   }
 
   @Post()
-  @CheckAbilities({ action: Action.Create, subject: Album })
+  @CheckAbilities(new CreateAlbumAbilityHandler())
   @HttpCode(StatusCodes.CREATED)
   async create(@Body() dto: CreateAlbumDto) {
     return await this.albumService.create(dto);
   }
 
   @Put(':uuid')
-  @CheckAbilities({ action: Action.Update, subject: Album })
+  @CheckAbilities(new UpdateAlbumAbilityHandler())
   async update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() dto: UpdateAlbumDto,
@@ -52,7 +56,7 @@ export class AlbumController {
   }
 
   @Delete(':uuid')
-  @CheckAbilities({ action: Action.Delete, subject: Album })
+  @CheckAbilities(new DeleteAlbumAbilityHandler())
   @HttpCode(StatusCodes.NO_CONTENT)
   async delete(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<string> {
     return await this.albumService.delete(uuid);

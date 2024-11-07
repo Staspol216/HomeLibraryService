@@ -18,9 +18,12 @@ import { CreateUserDto, UpdateUserPasswordDto } from './dto';
 import { StatusCodes } from 'http-status-codes';
 import { IUser } from './interfaces/user.interface';
 import { CheckAbilities } from 'src/ability/ability.decorator';
-import { Action } from 'src/ability/factory/ability.factory';
-import { User } from './entities/user.entity';
 import { AbilityGuard } from 'src/ability/ability.guard';
+import {
+  CreateUserAbilityHandler,
+  ReadUserAbilityHandler,
+  UpdateUserAbilityHandler,
+} from 'src/ability/handlers/user';
 
 @UseGuards(AbilityGuard)
 @UseInterceptors(ClassSerializerInterceptor)
@@ -29,25 +32,25 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  @CheckAbilities({ action: Action.Read, subject: User })
+  @CheckAbilities(new ReadUserAbilityHandler())
   async findAll(): Promise<IUser[]> {
     return await this.userService.findAll();
   }
 
-  @CheckAbilities({ action: Action.Read, subject: User })
   @Get(':uuid')
+  @CheckAbilities(new ReadUserAbilityHandler())
   async getById(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<IUser> {
     return await this.userService.getById(uuid);
   }
 
-  @CheckAbilities({ action: Action.Create, subject: User })
   @Post()
+  @CheckAbilities(new CreateUserAbilityHandler())
   async create(@Body() dto: CreateUserDto): Promise<IUser> {
     return await this.userService.create(dto);
   }
 
-  @CheckAbilities({ action: Action.Update, subject: User })
   @Put(':uuid')
+  @CheckAbilities(new UpdateUserAbilityHandler())
   async updatePassword(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() dto: UpdateUserPasswordDto,
@@ -56,7 +59,6 @@ export class UserController {
     return user;
   }
 
-  @CheckAbilities({ action: Action.Delete, subject: User })
   @Delete(':uuid')
   @HttpCode(StatusCodes.NO_CONTENT)
   async delete(

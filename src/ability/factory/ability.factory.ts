@@ -44,7 +44,7 @@ export class AbilityFactory {
     if (user.isAdmin) {
       can(Action.Manage, 'all');
     } else {
-      can([Action.Read], [Album, Artist, Track, Favorites]);
+      can(Action.Read, [Album, Artist, Track, Favorites]);
       can(Action.Manage, [FavAlbum, FavArtist, FavTrack]);
       can(Action.Delete, User, { id: user.id });
     }
