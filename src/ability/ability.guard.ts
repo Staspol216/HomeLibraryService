@@ -9,7 +9,7 @@ export class AbilityGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private abilityFactory: AbilityFactory,
-    // ? Надо подумать как избавиться от userService здесь. Кажется протекает слой абстракции
+    // ? Может как то можем избавиться от userService здесь?
     private userService: UserService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -20,8 +20,6 @@ export class AbilityGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = await this.userService.getById(request.user.id);
     const ability = this.abilityFactory.defineAbility(user);
-    return Boolean(
-      rules?.every(({ action, subject }) => ability.can(action, subject)),
-    );
+    return rules.every(({ action, subject }) => ability.can(action, subject));
   }
 }

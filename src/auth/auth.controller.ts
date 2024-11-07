@@ -9,7 +9,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/dto';
 import { Public } from './public.decorator';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -20,10 +19,7 @@ import { StatusCodes } from 'http-status-codes';
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly usersService: UserService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('login')

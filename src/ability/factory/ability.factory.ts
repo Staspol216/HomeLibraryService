@@ -10,6 +10,7 @@ import { Artist } from 'src/artist/entities/artist.entity';
 import { FavAlbum } from 'src/favorite/entities/FavAlbum.entity';
 import { FavArtist } from 'src/favorite/entities/FavArtist.entity';
 import { FavTrack } from 'src/favorite/entities/FavTrack.entity';
+import { Favorites } from 'src/favorite/interfaces/favorite.interface';
 import { Track } from 'src/track/entities/track.entity';
 import { User } from 'src/user/entities/user.entity';
 
@@ -30,6 +31,7 @@ export type Subject =
       | typeof FavAlbum
       | typeof FavArtist
       | typeof FavTrack
+      | typeof Favorites
     >
   | 'all';
 
@@ -42,11 +44,10 @@ export class AbilityFactory {
     if (user.isAdmin) {
       can(Action.Manage, 'all');
     } else {
-      can([Action.Read], [Album, Artist, Track]);
-      can([Action.Create, Action.Delete], [FavAlbum, FavArtist, FavTrack]);
+      can([Action.Read], [Album, Artist, Track, Favorites]);
+      can(Action.Manage, [FavAlbum, FavArtist, FavTrack]);
+      can(Action.Delete, User, { id: user.id });
     }
-
-    can(Action.Delete, User, { id: user.id });
 
     return build({
       detectSubjectType: (item) =>
