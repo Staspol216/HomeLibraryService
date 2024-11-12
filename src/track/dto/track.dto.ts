@@ -11,11 +11,11 @@ export class CreateTrackDto {
 
   @IsString()
   @IsOptional()
-  artistId: string | null; // refers to Artist
+  artistId: string | null;
 
   @IsString()
   @IsOptional()
-  albumId: string | null; // refers to Album
+  albumId: string | null;
 }
 
 export class UpdateTrackDto {
