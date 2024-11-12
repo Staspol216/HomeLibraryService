@@ -73,14 +73,6 @@ export class AlbumService {
     if (result.affected === 0) {
       throw new NotFoundException(`Album with id ${id} not found`);
     }
-    // this.favoriteService.removeIdByDeleting(id, FavoriteEntities.Albums);
-    // const targetAlbum = this.db.albums[albumIndex];
-    // this.db.albums.splice(albumIndex, 1);
-    // this.db.tracks.forEach((track) => {
-    //   if (track.albumId === targetAlbum.id) {
-    //     track.albumId = null;
-    //   }
-    // });
     return `Album with id ${id} has been deleted`;
   }
 }
