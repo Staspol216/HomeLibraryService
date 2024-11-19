@@ -13,6 +13,7 @@ import { FavTrack } from 'src/favorite/entities/FavTrack.entity';
 import { Favorites } from 'src/favorite/interfaces/favorite.interface';
 import { Track } from 'src/track/entities/track.entity';
 import { User } from 'src/user/entities/user.entity';
+import { UserRoles } from '../roles/roles.eum';
 
 export enum Action {
   Manage = 'manage',
@@ -41,7 +42,7 @@ export type AppAbility = Ability<[Action, Subject]>;
 export class AbilityFactory {
   defineAbility(user: User) {
     const { can, build } = new AbilityBuilder<AppAbility>(Ability);
-    if (user.isAdmin) {
+    if (user.role === UserRoles.Admin) {
       can(Action.Manage, 'all');
     } else {
       can(Action.Read, [Album, Artist, Track, Favorites]);
