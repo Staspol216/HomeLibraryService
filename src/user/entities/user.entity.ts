@@ -1,4 +1,5 @@
 import { Exclude, Transform } from 'class-transformer';
+import { UserRoles } from 'src/ability/roles/roles.eum';
 import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { PrimaryGeneratedColumn } from 'typeorm/decorator/columns/PrimaryGeneratedColumn';
 
@@ -16,6 +17,9 @@ export class User {
   @Column({ default: false })
   @Exclude({ toPlainOnly: true })
   isAdmin: boolean;
+
+  @Column({ enum: UserRoles, type: 'enum', default: UserRoles.Client })
+  role: UserRoles;
 
   @Column({ type: 'int', default: 1 })
   version: number;
