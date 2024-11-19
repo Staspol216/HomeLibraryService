@@ -14,10 +14,6 @@ export class User {
   @Exclude({ toPlainOnly: true })
   password: string;
 
-  @Column({ default: false })
-  @Exclude({ toPlainOnly: true })
-  isAdmin: boolean;
-
   @Column({ enum: UserRoles, type: 'enum', default: UserRoles.Client })
   role: UserRoles;
 
