@@ -13,7 +13,7 @@ import { FavTrack } from 'src/favorite/entities/FavTrack.entity';
 import { Favorites } from 'src/favorite/interfaces/favorite.interface';
 import { Track } from 'src/track/entities/track.entity';
 import { User } from 'src/user/entities/user.entity';
-import { UserRoles } from '../roles/roles.eum';
+import { UserRoles } from 'src/user/roles/roles.eum';
 
 export enum Action {
   Manage = 'manage',

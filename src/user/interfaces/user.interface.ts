@@ -1,4 +1,4 @@
-import { UserRoles } from 'src/ability/roles/roles.eum';
+import { UserRoles } from '../roles/roles.eum';
 
 export interface IUser {
   id: string;

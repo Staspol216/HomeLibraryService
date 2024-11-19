@@ -1,7 +1,7 @@
 import { Exclude, Transform } from 'class-transformer';
-import { UserRoles } from 'src/ability/roles/roles.eum';
 import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { PrimaryGeneratedColumn } from 'typeorm/decorator/columns/PrimaryGeneratedColumn';
+import { UserRoles } from '../roles/roles.eum';
 
 @Entity('user')
 export class User {
