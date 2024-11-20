@@ -22,7 +22,10 @@ import {
   ReadTrackAbilityHandler,
   UpdateTrackAbilityHandler,
 } from 'src/ability/handlers/track';
-@UseGuards(AbilityGuard)
+import { RolesGuard } from 'src/user/roles/roles.guard';
+import { UserRoles } from 'src/user/roles/roles.eum';
+import { Roles } from 'src/user/roles/roles.decorator';
+@UseGuards(RolesGuard, AbilityGuard)
 @Controller('track')
 export class TrackController {
   constructor(private trackService: TrackService) {}
@@ -34,6 +37,7 @@ export class TrackController {
   }
 
   @Get(':uuid')
+  @Roles(UserRoles.Manager)
   @CheckAbilities(new ReadTrackAbilityHandler())
   async getById(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<ITrack> {
     return this.trackService.getById(uuid);
@@ -41,12 +45,14 @@ export class TrackController {
 
   @Post()
   @HttpCode(StatusCodes.CREATED)
+  @Roles(UserRoles.Manager)
   @CheckAbilities(new CreateTrackAbilityHandler())
   async create(@Body() dto: CreateTrackDto) {
     return this.trackService.create(dto);
   }
 
   @Put(':uuid')
+  @Roles(UserRoles.Manager)
   @CheckAbilities(new UpdateTrackAbilityHandler())
   async update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
@@ -56,6 +62,7 @@ export class TrackController {
   }
 
   @Delete(':uuid')
+  @Roles(UserRoles.Manager)
   @CheckAbilities(new DeleteTrackAbilityHandler())
   @HttpCode(StatusCodes.NO_CONTENT)
   async delete(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<string> {

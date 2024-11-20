@@ -23,8 +23,9 @@ import {
   DeleteFavTrackAbilityHandler,
   ReadFavoritesAbilityHandler,
 } from 'src/ability/handlers/favorites';
+import { RolesGuard } from 'src/user/roles/roles.guard';
 
-@UseGuards(AbilityGuard)
+@UseGuards(RolesGuard, AbilityGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('favs')
 export class FavoriteController {

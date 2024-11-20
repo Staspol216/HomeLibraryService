@@ -22,7 +22,10 @@ import {
   ReadAlbumAbilityHandler,
   UpdateAlbumAbilityHandler,
 } from 'src/ability/handlers/album';
-@UseGuards(AbilityGuard)
+import { RolesGuard } from 'src/user/roles/roles.guard';
+import { UserRoles } from 'src/user/roles/roles.eum';
+import { Roles } from 'src/user/roles/roles.decorator';
+@UseGuards(RolesGuard, AbilityGuard)
 @Controller('album')
 export class AlbumController {
   constructor(private albumService: AlbumService) {}
@@ -34,12 +37,14 @@ export class AlbumController {
   }
 
   @Get(':uuid')
+  @Roles(UserRoles.Manager)
   @CheckAbilities(new ReadAlbumAbilityHandler())
   async getById(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<IAlbum> {
     return await this.albumService.getById(uuid);
   }
 
   @Post()
+  @Roles(UserRoles.Manager)
   @CheckAbilities(new CreateAlbumAbilityHandler())
   @HttpCode(StatusCodes.CREATED)
   async create(@Body() dto: CreateAlbumDto) {
@@ -47,6 +52,7 @@ export class AlbumController {
   }
 
   @Put(':uuid')
+  @Roles(UserRoles.Manager)
   @CheckAbilities(new UpdateAlbumAbilityHandler())
   async update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
@@ -56,6 +62,7 @@ export class AlbumController {
   }
 
   @Delete(':uuid')
+  @Roles(UserRoles.Manager)
   @CheckAbilities(new DeleteAlbumAbilityHandler())
   @HttpCode(StatusCodes.NO_CONTENT)
   async delete(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<string> {
