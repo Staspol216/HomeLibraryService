@@ -38,9 +38,11 @@ export type Subject =
 
 export type AppAbility = Ability<[Action, Subject]>;
 
+type AbilityUserPayload = Pick<User, 'id' | 'login' | 'role'>;
+
 @Injectable()
 export class AbilityFactory {
-  defineAbility(user: User) {
+  defineAbility(user: AbilityUserPayload) {
     const { can, build } = new AbilityBuilder<AppAbility>(Ability);
     if (user.role === UserRoles.Admin) {
       can(Action.Manage, 'all');

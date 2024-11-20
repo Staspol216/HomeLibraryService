@@ -8,6 +8,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RefreshStrategy } from './strategy/refresh.strategy';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RefreshStrategy } from './strategy/refresh.strategy';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' },
     }),
+    UserModule,
   ],
   providers: [
     AuthService,
