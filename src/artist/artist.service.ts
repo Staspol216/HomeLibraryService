@@ -53,21 +53,11 @@ export class ArtistService {
     if (result.affected === 0) {
       throw new NotFoundException(`Artist with id ${id} not found`);
     }
-    // this.favoriteService.removeIdByDeleting(id, FavoriteEntities.Artist);
-    // if (artistIndex === -1) {
-    //   throw new NotFoundException(`Artist with id ${id} not found`);
-    // }
-    // this.db.artists.splice(artistIndex, 1);
-    // this.db.albums.forEach((album) => {
-    //   if (album.artistId === targetArtist.id) {
-    //     album.artistId = null;
-    //   }
-    // });
-    // this.db.tracks.forEach((track) => {
-    //   if (track.artistId === targetArtist.id) {
-    //     track.artistId = null;
-    //   }
-    // });
+    // ! Не могу сказать почему тут остался закомментированный код выше, на текущий момент кскадное удаление для избранных сущностей работает, связи описаны в Fav{EntityName}.entity.ts
+    // ! Также проверил корректность связи для других сущностей, вроде все работает
+    // ! Закомментированный код выше убрал
+    // наверное это была попытка настроить каскадное удаление, давай попробуем с помощью декораторов @OneToMany, @ManyToOne или @OneToOne в typeOrm
+    // главное правильно описать связи между сущностями и можно использовать опцию { cascade: true } в декораторе @OneToMany, чтобы включить каскадное удаление.
     return `Artist with id ${id} has been deleted`;
   }
 }

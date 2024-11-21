@@ -1,7 +1,7 @@
 import { Exclude, Transform } from 'class-transformer';
 import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { PrimaryGeneratedColumn } from 'typeorm/decorator/columns/PrimaryGeneratedColumn';
-import * as bcrypt from 'bcrypt';
+import { UserRoles } from '../roles/roles.eum';
 
 @Entity('user')
 export class User {
@@ -13,6 +13,9 @@ export class User {
   @Column({ type: 'varchar' })
   @Exclude({ toPlainOnly: true })
   password: string;
+
+  @Column({ enum: UserRoles, type: 'enum', default: UserRoles.Client })
+  role: UserRoles;
 
   @Column({ type: 'int', default: 1 })
   version: number;
@@ -35,10 +38,6 @@ export class User {
   @Exclude()
   @Column({ nullable: true })
   refreshToken: string;
-
-  async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
-  }
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);

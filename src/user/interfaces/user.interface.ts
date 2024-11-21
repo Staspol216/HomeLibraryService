@@ -1,3 +1,5 @@
+import { UserRoles } from '../roles/roles.eum';
+
 export interface IUser {
   id: string;
   login: string;
@@ -6,4 +8,5 @@ export interface IUser {
   version: number;
   createdAt: Date;
   updatedAt: Date;
+  role: UserRoles;
 }

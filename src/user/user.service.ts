@@ -1,21 +1,24 @@
 import {
   ClassSerializerInterceptor,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
   UseInterceptors,
 } from '@nestjs/common';
 import { IUser } from './interfaces/user.interface';
-import { CreateUserDto, UpdateUserPasswordDto } from './dto';
+import { CreateUserDto, UpdateUserDto, UpdateUserPasswordDto } from './dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { AbilityFactory, Action } from 'src/ability/factory/ability.factory';
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable({})
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private abilityFactory: AbilityFactory,
   ) {}
 
   async findAll(): Promise<IUser[]> {
@@ -35,12 +38,18 @@ export class UserService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<IUser> {
-    const { password } = createUserDto;
+    const { password, login } = createUserDto;
+    const user = await this.findByLogin(login);
+    if (user) {
+      throw new ConflictException('Username already exists');
+    }
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
-    const newUser = new User({ ...createUserDto, password: hashedPassword });
+    const newUser = new User({ login, password: hashedPassword });
     return this.userRepository.save(newUser);
   }
+  // ! DONE
+  // Здесь не хватает дополнительной проверки и возврат типизированной ошибки про то что - Пользователь с таким login уже зарегистрирован
 
   async updatePassword(dto: UpdateUserPasswordDto, id: string): Promise<IUser> {
     const user = await this.userRepository.findOne({ where: { id } });
@@ -65,18 +74,31 @@ export class UserService {
     return new User(updatedUser);
   }
 
-  async update(id: string, updateUserDto: any) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     return this.userRepository.save({
       id,
       ...updateUserDto,
     });
   }
+  // ! DONE
+  // updateUserDto нужно типизировать типом/интерфейсом или классом dto
+  // update сейчас используется только для обновления токена, но в принципе логика может быть расширена
 
-  async delete(id: string) {
+  async delete(id: string, currentUser: User) {
+    const ability = this.abilityFactory.defineAbility(currentUser);
+    const userToDelete = await this.userRepository.findOne({ where: { id } });
+    const isAllowed = ability.can(Action.Delete, userToDelete);
+    if (!isAllowed) {
+      throw new ForbiddenException('You are not allowed to delete users');
+    }
     const result = await this.userRepository.delete(id);
     if (result.affected === 0) {
-      throw new NotFoundException(`User with id ${id} not found`);
+      throw new NotFoundException(`User not found`);
     }
     return 'Deleted';
+    // ! DONE
+    // здесь мы даем удалить пользователя по идентификатору, т.е. пользователь может удалить любого пользователя
+    // это не совсем безопасно, возможно такая проверка есть на фронте, но можно и здесь тоже добавить проверку
+    // например брать идентификатор данного юзера из контекста/запроса(из авторизации) и проверять его на разрешенность
   }
 }
