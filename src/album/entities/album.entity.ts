@@ -1,6 +1,7 @@
 import { Artist } from 'src/artist/entities/artist.entity';
 import { Track } from 'src/track/entities/track.entity';
 import {
+  Relation,
   Column,
   Entity,
   JoinColumn,
@@ -27,10 +28,10 @@ export class Album {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'artistId' })
-  artist: Artist;
+  artist: Relation<Artist>;
 
   @OneToMany(() => Track, (track) => track.album)
-  track: Track[];
+  track: Relation<Track[]>;
 
   constructor(partial: Partial<Album>) {
     Object.assign(this, partial);
