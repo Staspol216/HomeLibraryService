@@ -21,17 +21,28 @@ export default class MainSeeder implements Seeder {
 
     console.log('seeding albums...');
     const albumFactory = factoryManager.get(Album);
-    const albumsWithoutAnyRelations = await albumFactory.saveMany(10);
+    const albums = await Promise.all(
+      Array(20)
+        .fill('')
+        .map(async () => {
+          const savedAlbum = await albumFactory.make({
+            artist: faker.helpers.arrayElement(artists),
+          });
+          return savedAlbum;
+        }),
+    );
+
+    const albumRepo = dataSource.getRepository(Album);
+    await albumRepo.save(albums);
 
     console.log('seeding tracks...');
-
     const trackFactory = factoryManager.get(Track);
     const tracks = await Promise.all(
       Array(20)
         .fill('')
         .map(async () => {
           const track = await trackFactory.make({
-            album: faker.helpers.arrayElement(albumsWithoutAnyRelations),
+            album: faker.helpers.arrayElement(albums),
             artist: faker.helpers.arrayElement(artists),
           });
           return track;
@@ -40,17 +51,5 @@ export default class MainSeeder implements Seeder {
 
     const trackRepo = dataSource.getRepository(Track);
     await trackRepo.save(tracks);
-
-    const albumRepo = dataSource.getRepository(Album);
-
-    await Promise.all(
-      albumsWithoutAnyRelations.map(async (album) => {
-        const savedAlbum = await albumRepo.update(album.id, {
-          artist: faker.helpers.arrayElement(artists),
-        });
-        console.log(savedAlbum);
-        return savedAlbum;
-      }),
-    );
   }
 }
