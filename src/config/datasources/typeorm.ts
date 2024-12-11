@@ -22,5 +22,5 @@ const typeormModuleOptions: TypeOrmModuleOptions = {
   autoLoadEntities: true,
 };
 
-export default registerAs('typeorm', () => typeormModuleOptions);
-export const connectionSource = new DataSource(datasourceOptions);
+export const typeorm = registerAs('typeorm', () => typeormModuleOptions);
+export default new DataSource(datasourceOptions);

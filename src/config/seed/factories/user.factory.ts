@@ -10,8 +10,8 @@ export const UserFactory = setSeederFactory(User, (faker) => {
     id: faker.string.uuid(),
     createdAt: faker.date.recent(),
     updatedAt: faker.date.recent(),
-    refreshToken: faker.internet.jwt(),
-    version: faker.number.int({ min: 1, max: 10 }),
+    refreshToken: null,
+    version: 0,
   });
 
   return user;

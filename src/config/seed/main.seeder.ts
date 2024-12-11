@@ -19,40 +19,38 @@ export default class MainSeeder implements Seeder {
     const artistFactory = factoryManager.get(Artist);
     const artists = await artistFactory.saveMany(10);
 
-    console.log('seeding tracks...');
-    const trackFactory = factoryManager.get(Track);
+    console.log('seeding albums...');
+    const albumFactory = factoryManager.get(Album);
+    const albumsWithoutAnyRelations = await albumFactory.saveMany(10);
 
+    console.log('seeding tracks...');
+
+    const trackFactory = factoryManager.get(Track);
     const tracks = await Promise.all(
       Array(20)
         .fill('')
         .map(async () => {
           const track = await trackFactory.make({
+            album: faker.helpers.arrayElement(albumsWithoutAnyRelations),
             artist: faker.helpers.arrayElement(artists),
           });
           return track;
         }),
     );
 
-    const trackRepo = dataSource.getRepository(Album);
+    const trackRepo = dataSource.getRepository(Track);
     await trackRepo.save(tracks);
 
-    const albumFactory = factoryManager.get(Album);
-
-    const albums = await Promise.all(
-      Array(20)
-        .fill('')
-        .map(async () => {
-          const album = await albumFactory.make({
-            track: faker.helpers.arrayElements(tracks),
-            artist: faker.helpers.arrayElement(artists),
-          });
-          return album;
-        }),
-    );
-
     const albumRepo = dataSource.getRepository(Album);
-    await albumRepo.save(albums);
 
-    console.log(tracks);
+    await Promise.all(
+      albumsWithoutAnyRelations.map(async (album) => {
+        const savedAlbum = await albumRepo.update(album.id, {
+          artist: faker.helpers.arrayElement(artists),
+        });
+        console.log(savedAlbum);
+        return savedAlbum;
+      }),
+    );
   }
 }
