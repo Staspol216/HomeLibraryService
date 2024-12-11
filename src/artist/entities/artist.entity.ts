@@ -1,3 +1,4 @@
+import { Album } from 'src/album/entities/album.entity';
 import { Track } from 'src/track/entities/track.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -9,6 +10,9 @@ export class Artist {
   name: string;
   @Column('boolean')
   grammy: boolean;
+
+  @OneToMany(() => Album, (album) => album.artistId)
+  albums: Track[];
 
   @OneToMany(() => Track, (track) => track.artistId)
   tracks: Track[];
