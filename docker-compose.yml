@@ -1,10 +1,23 @@
-version: '3.8'
+version: "3.8"
 
 services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - 5173:5173
+    networks:
+      - home-library-network
+    volumes:
+      - ./frontend:/usr/src/app/frontend
+      - /usr/src/app/frontend/node_modules
   backend:
     container_name: backend
     build:
-      context: .
+      context: ./backend
       dockerfile: ./Dockerfile
     restart: always
     ports:
@@ -14,14 +27,14 @@ services:
     networks:
       - home-library-network
     volumes:
-      - ./:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./backend:/usr/src/app/backend
+      - /usr/src/app/backend/node_modules
 
   postgres:
     container_name: postgres-database
     build:
       context: .
-      dockerfile: ./postgres/Dockerfile
+      dockerfile: ./backend/postgres/Dockerfile
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -32,7 +45,7 @@ services:
     networks:
       - home-library-network
     volumes:
-      - ./docker/db/data:/var/lib/postgresql/data/
+      - ./backend/docker/db/data:/var/lib/postgresql/data/
 networks:
   home-library-network:
     driver: bridge
