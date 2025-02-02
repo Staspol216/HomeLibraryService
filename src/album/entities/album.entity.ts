@@ -1,12 +1,13 @@
 import { Artist } from 'src/artist/entities/artist.entity';
 import { Track } from 'src/track/entities/track.entity';
 import {
+  Relation,
   Column,
   Entity,
   JoinColumn,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity('album')
@@ -23,14 +24,14 @@ export class Album {
   @Column({ nullable: true })
   artistId: string | null;
 
-  @OneToOne(() => Artist, (artist) => artist.id, {
+  @ManyToOne(() => Artist, (artist) => artist.id, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'artistId' })
-  artist: Artist;
+  artist: Relation<Artist>;
 
   @OneToMany(() => Track, (track) => track.album)
-  track: Track[];
+  track: Relation<Track[]>;
 
   constructor(partial: Partial<Album>) {
     Object.assign(this, partial);
